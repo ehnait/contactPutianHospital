@@ -1,6 +1,7 @@
 from DrissionPage.easy_set import use_auto_port, set_no_imgs, set_headless, set_paths
 
-tel_number = 18032053788
+tel_number = '输入目标号码'
+
 if __name__ == '__main__':
     # 使用自动分配的端口和临时文件夹
     use_auto_port(True)

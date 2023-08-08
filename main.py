@@ -61,5 +61,8 @@ def send_tel(page, url):
 
 
 if __name__ == '__main__':
-    update_api('api.txt')
-    iterate_api('api.txt')
+    if tel_number.isdigit():
+        update_api('api.txt')
+        iterate_api('api.txt')
+    else:
+        print("请先在文件config.py中配置手机号码")
