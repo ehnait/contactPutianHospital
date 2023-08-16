@@ -2,6 +2,7 @@ from DrissionPage.easy_set import use_auto_port, set_no_imgs, set_headless, set_
 
 tel_number = '输入目标号码'
 
+
 if __name__ == '__main__':
     # 使用自动分配的端口和临时文件夹
     use_auto_port(True)
@@ -11,4 +12,4 @@ if __name__ == '__main__':
     set_headless(False)
     # 设置你的浏览器路径
     # see: http://g1879.gitee.io/drissionpagedocs/get_start/before_start/
-    set_paths(browser_path=r'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome')
+    set_paths(browser_path=r'这里修改为您的浏览器可执行文件路径，可以在chrome浏览器的地址栏中输入：chrome://version 查看 ')

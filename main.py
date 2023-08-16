@@ -3,16 +3,6 @@ from concurrent.futures import ThreadPoolExecutor
 from DrissionPage import ChromiumPage
 
 
-def update_api(file_path):
-    with open(file_path, 'r+') as file:
-        urls = [line.strip() for line in file if line.strip()]
-        unique_urls = set(urls)
-        file.seek(0)
-        file.truncate()
-        for url in unique_urls:
-            file.write(url)
-
-
 def iterate_api(file_path):
     with open(file_path, 'r') as file:
         urls = file.readlines()
@@ -20,7 +10,7 @@ def iterate_api(file_path):
 
         success_count = 0
 
-        with ThreadPoolExecutor(max_workers=64) as executor:
+        with ThreadPoolExecutor(max_workers=32) as executor:
             futures = []
 
             for i, url in enumerate(urls):
@@ -62,7 +52,6 @@ def send_tel(page, url):
 
 if __name__ == '__main__':
     if tel_number.isdigit():
-        update_api('api.txt')
         iterate_api('api.txt')
     else:
         print("请先在文件config.py中配置手机号码")
