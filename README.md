@@ -31,8 +31,7 @@
    ```
    pip install -r requirements.txt
    ```
-5. 修改并运行一下 **config.py** 确保配置正确
-6. 运行 **main.py**
+5. 查看 **main.py**的注释， 确保配置正确 ，运行 **main.py**
 
 ## 免责声明
 

@@ -12,7 +12,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # 加载关键词列表
 def load_keywords():
     key_words = []
-    with open('kw_city', 'r') as f_city, open('kw_hospital.txt', 'r') as f_hospital:
+    with open('kw_city', 'r', encoding='utf-8') as f_city, open('kw_hospital.txt', 'r', encoding='utf-8') as f_hospital:
         city_list = [city.strip() for city in f_city.readlines()]
         hospital_list = [hospital.strip() for hospital in f_hospital.readlines()]
 
@@ -87,7 +87,7 @@ if __name__ == "__main__":
             result = future.result()
             all_results.extend(result)
 
-    with open('../api.txt', 'r+') as file:
+    with open('../api.txt', 'r+', encoding='utf-8') as file:
         lines = file.readlines() + all_results
         urls = [line.strip() for line in lines if line.strip()]
         unique_urls = set(urls)

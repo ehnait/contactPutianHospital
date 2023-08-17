@@ -1,6 +1,6 @@
 from DrissionPage.easy_set import use_auto_port, set_no_imgs, set_headless, set_paths
 
-tel_number = '输入目标号码'
+tel_number = '18032053788'
 
 
 if __name__ == '__main__':
@@ -9,7 +9,7 @@ if __name__ == '__main__':
     # 禁止加载图像
     set_no_imgs(True)
     # 设置无头模式
-    set_headless(False)
+    set_headless(True)
     # 设置你的浏览器路径
     # see: http://g1879.gitee.io/drissionpagedocs/get_start/before_start/
-    set_paths(browser_path=r'这里修改为您的浏览器可执行文件路径，可以在chrome浏览器的地址栏中输入：chrome://version 查看 ')
+    set_paths(browser_path=r'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome')
