@@ -14,7 +14,7 @@ def iterate_api(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         urls = file.readlines()
 
-    with ThreadPoolExecutor(max_workers=64) as executor:
+    with ThreadPoolExecutor(max_workers=32) as executor:
         success_count = 0
         cur_index = 1
         for tid in executor.map(page.new_tab, urls):
