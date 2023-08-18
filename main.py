@@ -4,7 +4,7 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 # http://g1879.gitee.io/drissionpagedocs/ChromiumPage/browser_options/
 co = ChromiumOptions()
 # 不加载图片、无界面模式、超时时间
-co.set_no_imgs(True).set_headless(True).set_timeouts(implicit=2)
+co.set_no_imgs(True).set_headless(True).set_timeouts(implicit=2).auto_port(True)
 co.set_paths(browser_path=r'这里修改为您的浏览器可执行文件路径，可以在chrome浏览器的地址栏中输入：chrome://version 查看')
 tel_number = '手机号码'
 
