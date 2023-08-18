@@ -50,7 +50,8 @@ def iterate_api(file_path):
                 print(f"Exception：{str(e)}")
             finally:
                 cur_index += 1
-                page.close_tabs(tabs_or_ids=new_tab)
+                if new_tab:
+                    page.close_tabs(tabs_or_ids=new_tab)
     page.quit()
 
 
