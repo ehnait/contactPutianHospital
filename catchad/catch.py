@@ -33,7 +33,12 @@ def headers():
 
 def proxies():
     return {
-        # 如果需要请替换你自己的代理，建议将代理信息放在配置文件中，并使用环境变量加载。
+        # 如需使用代理请自行替换，这里有一些不太好用的免费代理
+        # - https://www.docip.net/#index
+        # - https://openproxy.space/list
+
+        # "http": "x.x.x.x:xx",
+        # "https": "x.x.x.x:xx",
     }
 
 
