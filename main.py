@@ -67,6 +67,7 @@ def iterate_api(file_path, workers=4):
     """
     page = ChromiumPage(addr_driver_opts=co)
     page.get('https://www.baidu.com/')
+    time.sleep(1)
 
     with open(file_path, 'r', encoding='utf-8') as file:
         urls = file.readlines()
