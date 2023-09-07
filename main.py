@@ -6,8 +6,8 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 
 # http://g1879.gitee.io/drissionpagedocs/ChromiumPage/browser_options/
 co = ChromiumOptions()
-# 不加载图片、有界面模式、自动获取端口
-co.set_no_imgs(True).set_headless(False).auto_port(True)
+# 加载图片、有界面模式、自动获取端口
+co.set_no_imgs(False).set_headless(False).auto_port(True)
 
 co.set_paths(browser_path=r'这里修改为您的浏览器可执行文件路径，可以在chrome浏览器的地址栏中输入：chrome://version 查看')
 tel_number = '手机号码'
@@ -50,6 +50,7 @@ def process_tab(page, url):
         print(f"An error occurred: {e}")
     finally:
         if tab:
+            time.sleep(1)  # 自己权衡是否需要延迟
             page.close_tabs(tabs_or_ids=tab)
 
 
