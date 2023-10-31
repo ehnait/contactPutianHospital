@@ -1,4 +1,4 @@
 APScheduler==3.10.1
-DrissionPage==3.2.31
+DrissionPage==3.2.34
 fake_useragent==1.2.1
 Requests==2.31.0

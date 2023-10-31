@@ -1,13 +1,13 @@
-import random
 import time
+import random
+from fake_useragent import UserAgent
 from concurrent.futures import ThreadPoolExecutor
-
 from DrissionPage import ChromiumPage, ChromiumOptions
 
 # http://g1879.gitee.io/drissionpagedocs/ChromiumPage/browser_options/
 co = ChromiumOptions()
 # 加载图片、有界面模式、自动获取端口
-co.set_no_imgs(False).set_headless(False).auto_port(True)
+co.set_no_imgs(False).set_headless(False).auto_port(True).set_user_agent(UserAgent().random)
 
 co.set_paths(browser_path=r'这里修改为您的浏览器可执行文件路径，可以在chrome浏览器的地址栏中输入：chrome://version 查看')
 tel_number = '手机号码'
@@ -30,6 +30,7 @@ def process_tab(page, url):
       """
 
     tab = None
+    tab_title = None
     try:
         tid = page.new_tab(url)
         tab = page.get_tab(tid)
@@ -43,8 +44,7 @@ def process_tab(page, url):
             callback = tab.ele('@class:leavetel-callback')
             if callback:
                 callback.click(by_js=True)
-                return {"state": True, "title": tab.title}
-
+                tab_title = tab.title
 
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -52,6 +52,7 @@ def process_tab(page, url):
         if tab:
             time.sleep(1)  # 自己权衡是否需要延迟
             page.close_tabs(tabs_or_ids=tab)
+        return tab_title
 
 
 def iterate_api(file_path, workers=4):
@@ -68,10 +69,10 @@ def iterate_api(file_path, workers=4):
     """
     page = ChromiumPage(addr_driver_opts=co)
     page.get('https://www.baidu.com/')
-    time.sleep(1)
-
+    page.wait.load_start()
     with open(file_path, 'r', encoding='utf-8') as file:
         urls = file.readlines()
+        random.shuffle(urls)  # 随机打乱列表元素顺序
         total_len = len(urls)
 
     success_count = 0
@@ -79,11 +80,8 @@ def iterate_api(file_path, workers=4):
     with ThreadPoolExecutor(max_workers=workers) as executor:
         for result in executor.map(lambda url: process_tab(page, url), urls):
             if result:
-                state = result["state"]
-                title = result["title"]
-                if state:
-                    success_count += 1
-                    print(f"成功数量, {success_count}/{total_len} ,标题:{title}")
+                success_count += 1
+                print(f"成功数量, {success_count}/{total_len} ,标题:{result}")
 
 
 if __name__ == '__main__':
