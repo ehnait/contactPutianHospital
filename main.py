@@ -10,7 +10,8 @@ co = ChromiumOptions()
 co.set_no_imgs(False).set_headless(False).auto_port(True).set_user_agent(UserAgent().random)
 
 co.set_paths(browser_path=r'这里修改为您的浏览器可执行文件路径，可以在chrome浏览器的地址栏中输入：chrome://version 查看')
-tel_number = '手机号码'
+tel_number = ''  # 手机号码
+tel_name = ''  # 名字(可选)
 
 
 def process_tab(page, url):
@@ -20,13 +21,13 @@ def process_tab(page, url):
         - 使用 page.new_tab(url) 创建新的标签页，返回标签页 ID（tid）
         - 获取页面上指定 ID 的标签页（tab）对象
         - 等待页面加载完成后再处理该标签页
-        - 检查再次是否存在类名为 "pc-icon-leave-tel" 的元素（离开电话图标）
-            - 若存在，则点击离开电话图标，并在 "leavetel-input" 元素中输入电话号码
-        - 检查类名为 "leavetel-callback" 的元素（回拨按钮）
-            - 若存在，则点击回拨按钮，并返回字典对象：{"state": True, "title": tab.title}
+        - 检查再次是否存在类名为 "pc-icon-leave-message" 的元素（留言图标）
+            - 若存在，则点击离开电话图标，并在 "tel-input " 元素中输入电话号码
+        - 检查类名为 "leaveword-submit" 的元素（提交按钮）
+            - 若存在，则点击回拨按钮，并返回 tab title
       :param page: ChromiumPage对象，用于管理和操作浏览器标签页
       :param url: 网页地址
-      :return: 字典，包含处理结果状态和标题信息
+      :return: 结果
       """
 
     tab = None
@@ -36,12 +37,26 @@ def process_tab(page, url):
         tab = page.get_tab(tid)
         tab.wait.load_start()
 
-        icon_leave_tel = tab.ele('@class:pc-icon-leave-tel')
-        if icon_leave_tel:
-            icon_leave_tel.click(by_js=True)
-            leavetel_input = tab.ele('@class:leavetel-input')
+        # https://github.com/ehnait/contactPutianHospital/issues/12
+        # icon_leave_tel = tab.ele('@class:pc-icon-leave-tel')
+        # if icon_leave_tel:
+        #     icon_leave_tel.click(by_js=True)
+        #     leavetel_input = tab.ele('@class:leavetel-input')
+        #     leavetel_input.input(tel_number)
+        #     callback = tab.ele('@class:leavetel-callback')
+        #     if callback:
+        #         callback.click(by_js=True)
+        #         tab_title = tab.title
+
+        icon_leave_message = tab.ele('@class:pc-icon-leave-message')
+        if icon_leave_message:
+            icon_leave_message.click(by_js=True)
+            leavetel_input = tab.ele('@class:tel-input ')
             leavetel_input.input(tel_number)
-            callback = tab.ele('@class:leavetel-callback')
+            if tel_name:
+                name_input = tab.ele('@class:name-input')
+                name_input.input(tel_name)
+            callback = tab.ele('@class:leaveword-submit')
             if callback:
                 callback.click(by_js=True)
                 tab_title = tab.title
