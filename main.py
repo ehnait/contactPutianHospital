@@ -4,6 +4,7 @@ from fake_useragent import UserAgent
 from concurrent.futures import ThreadPoolExecutor
 from DrissionPage import ChromiumPage, ChromiumOptions
 
+baidu_url = 'https://www.baidu.com/'
 # http://g1879.gitee.io/drissionpagedocs/ChromiumPage/browser_options/
 co = ChromiumOptions()
 # 加载图片、有界面模式、自动获取端口
@@ -12,6 +13,27 @@ co.set_no_imgs(False).set_headless(False).auto_port(True).set_user_agent(UserAge
 co.set_paths(browser_path=r'这里修改为您的浏览器可执行文件路径，可以在chrome浏览器的地址栏中输入：chrome://version 查看')
 tel_number = ''  # 手机号码
 tel_name = ''  # 名字(可选)
+enable_OTP = True  # 如果为True ,且页面元素存在‘去官网按钮’则进入官网发送验证码 https://github.com/ehnait/contactPutianHospital/issues/13
+
+
+def send_otp(page):
+    tabs = page.tabs
+    for tab_id in tabs:
+        try:
+            official_tab = page.get_tab(tab_id)
+            official_tab.wait.load_start()
+            if official_tab and official_tab.url != baidu_url:
+                iframe = official_tab.get_frame(1)
+                consult_card = iframe('极速预约')
+                consult_card.click(by_js=True)
+                sjh_form_input = iframe(
+                    '@class=with-placeholder sjh-form-input sjh-form-input-tel hide-date-editing')
+                sjh_form_input.input(tel_number)
+                sjh_captcha = iframe('获取验证码')
+                sjh_captcha.click(by_js=True)
+                page.close_tabs(tabs_or_ids=official_tab)
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
 
 def process_tab(page, url):
@@ -60,7 +82,10 @@ def process_tab(page, url):
             if callback:
                 callback.click(by_js=True)
                 tab_title = tab.title
-
+                if enable_OTP:
+                    go_official_website = tab.ele('@class=imlp-component-sugSlider-box-item ')
+                    if go_official_website.click(by_js=True):
+                        page.wait.load_start()
     except Exception as e:
         print(f"An error occurred: {e}")
     finally:
@@ -83,7 +108,7 @@ def iterate_api(file_path, workers=4):
 
     """
     page = ChromiumPage(addr_driver_opts=co)
-    page.get('https://www.baidu.com/')
+    page.get(baidu_url)
     page.wait.load_start()
     with open(file_path, 'r', encoding='utf-8') as file:
         urls = file.readlines()
@@ -96,7 +121,9 @@ def iterate_api(file_path, workers=4):
         for result in executor.map(lambda url: process_tab(page, url), urls):
             if result:
                 success_count += 1
-                print(f"成功数量, {success_count}/{total_len} ,标题:{result}")
+                print(f"留言成功数量, {success_count}/{total_len} ,标题:{result}")
+        if enable_OTP:
+            send_otp(page)
 
 
 if __name__ == '__main__':
