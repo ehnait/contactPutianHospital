@@ -72,9 +72,10 @@ def process_tab(page, url):
         if tab:
             time.sleep(1)  # 自己权衡是否需要延迟
             page.close_other_tabs()  # 关闭除当前标签页外的所有标签页
-            global global_success_count
-            global_success_count += 1
-            print(f"留言成功数量, {global_success_count}/{global_total_len} ,标题:{tab_title}")
+            if tab_title:
+                global global_success_count
+                global_success_count += 1
+                print(f"留言成功数量, {global_success_count}/{global_total_len} ,标题:{tab_title}")
 
 
 global_success_count = 0
