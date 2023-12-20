@@ -1,23 +1,25 @@
 import time
 import random
+from collections import Counter
 from fake_useragent import UserAgent
 from concurrent.futures import ThreadPoolExecutor
 from DrissionPage import ChromiumPage, ChromiumOptions
 
 # http://g1879.gitee.io/drissionpagedocs/ChromiumPage/browser_options/
 co = (ChromiumOptions()
-      .set_no_imgs(False)  # 加载图片
-      .set_headless(False)  # 有界面模式
-      .auto_port(True)  # 自动获取端口
-      .set_user_agent(UserAgent().random)  # 随机UserAgent
-      .set_paths(browser_path=r'这里修改为您的浏览器可执行文件路径，可以在chrome浏览器的地址栏中输入：chrome://version 查看'))
+.set_no_imgs(False)  # 加载图片
+.set_headless(False)  # 有界面模式
+.auto_port(True)  # 自动获取端口
+.set_user_agent(UserAgent().random)  # 随机UserAgent
+.set_paths(
+    browser_path=r'这里修改为您的浏览器可执行文件路径，可以在chrome浏览器的地址栏中输入：chrome://version 查看'))
 BAIDU_URL = 'https://www.baidu.com/'
 TEL_NUMBER = ''  # 手机号码
 TEL_NAME = ''  # 名字(可选)
 ENABLE_OTP = False  # 如果为True ,且页面元素存在‘去官网按钮’则进入官网发送验证码 https://github.com/ehnait/contactPutianHospital/issues/13
 
 
-def process_tab(page, url):
+def process_tab(page, url, success_counter, total_len):
     """
     处理网页标签函数
     - 创建新的标签页（tid）并获取标签页对象（tab）
@@ -32,6 +34,8 @@ def process_tab(page, url):
     - 最后关闭标签页并输出log
     :param page: ChromiumPage对象，用于管理和操作浏览器标签页
     :param url: 网页地址
+    :param success_counter: 计数器对象
+    :param total_len:
     """
     tab = None
     tab_title = None
@@ -67,19 +71,14 @@ def process_tab(page, url):
                     sjh_captcha.click(by_js=True)
                     page.close_tabs(tabs_or_ids=official_tab)
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"An error occurred: {e} , url: {url}")
     finally:
         if tab:
-            time.sleep(1)  # 自己权衡是否需要延迟
-            page.close_other_tabs()  # 关闭除当前标签页外的所有标签页
+            time.sleep(0.5)  # 自己权衡是否需要延迟
+            page.close_tabs(tabs_or_ids=tab)
             if tab_title:
-                global global_success_count
-                global_success_count += 1
-                print(f"留言成功数量, {global_success_count}/{global_total_len} ,标题:{tab_title}")
-
-
-global_success_count = 0
-global_total_len = 0
+                success_counter.update([tab_title])
+                print(f"留言成功数量, {len(success_counter)}/{total_len} ,标题:{tab_title}")
 
 
 def iterate_api(file_path):
@@ -98,16 +97,15 @@ def iterate_api(file_path):
     page.wait.load_start()
     with open(file_path, 'r', encoding='utf-8') as file:
         urls = file.readlines()
+        total_len = len(urls)
         random.shuffle(urls)  # 随机打乱列表元素顺序
-        global global_total_len
-        global_total_len = len(urls)
-
+    success_counter = Counter()
     if ENABLE_OTP:
         for url in urls:
-            process_tab(page, url)
+            process_tab(page, url, success_counter, total_len)
     else:
         with ThreadPoolExecutor(max_workers=4) as executor:
-            for result in executor.map(lambda url: process_tab(page, url), urls):
+            for result in executor.map(lambda url: process_tab(page, url, success_counter, total_len), urls):
                 pass
 
 
