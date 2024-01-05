@@ -63,12 +63,13 @@ def process_tab(page, url, success_counter, total_len):
                     official_tab = page.get_tab(page.latest_tab)  # 获取新标签页对象
                     iframe = official_tab.get_frame(1)  # 获取iframe对象
                     consult_card = iframe('极速预约')
-                    consult_card.click(by_js=True)
-                    sjh_form_input = iframe(
-                        '@class=with-placeholder sjh-form-input sjh-form-input-tel hide-date-editing')
-                    sjh_form_input.input(TEL_NUMBER)
-                    sjh_captcha = iframe('获取验证码')
-                    sjh_captcha.click(by_js=True)
+                    if consult_card:
+                        consult_card.click(by_js=True)
+                        sjh_form_input = iframe(
+                            '@class=with-placeholder sjh-form-input sjh-form-input-tel hide-date-editing')
+                        sjh_form_input.input(TEL_NUMBER)
+                        sjh_captcha = iframe('获取验证码')
+                        sjh_captcha.click(by_js=True)
                     page.close_tabs(tabs_or_ids=official_tab)
     except Exception as e:
         print(f"An error occurred: {e} , url: {url}")
@@ -104,7 +105,8 @@ def iterate_api(file_path):
         for url in urls:
             process_tab(page, url, success_counter, total_len)
     else:
-        with ThreadPoolExecutor(max_workers=4) as executor:
+        max_workers = 1  # 最大线程数
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
             for result in executor.map(lambda url: process_tab(page, url, success_counter, total_len), urls):
                 pass
 
