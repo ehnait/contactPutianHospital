@@ -53,9 +53,9 @@ def process_tab(page, url, success_counter, total_len):
             if TEL_NAME:
                 name_input = tab.ele('@class:name-input')
                 name_input.input(TEL_NAME)
-                if TEL_TEXT:
-                    text_input = tab.ele('@class:leaveword-textarea')
-                    text_input.input(TEL_TEXT)
+            if TEL_TEXT:
+                text_input = tab.ele('@class:leaveword-textarea')
+                text_input.input(TEL_TEXT)
             callback = tab.ele('@class:leaveword-submit')
             if callback:
                 callback.click(by_js=True)
