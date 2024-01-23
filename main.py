@@ -16,6 +16,7 @@ co = (ChromiumOptions()
 BAIDU_URL = 'https://www.baidu.com/'
 TEL_NUMBER = ''  # 手机号码
 TEL_NAME = ''  # 名字(可选)
+TEL_TEXT= '' # 留言(可选)
 ENABLE_OTP = False  # 如果为True ,且页面元素存在‘去官网按钮’则进入官网发送验证码 https://github.com/ehnait/contactPutianHospital/issues/13
 
 
@@ -52,6 +53,9 @@ def process_tab(page, url, success_counter, total_len):
             if TEL_NAME:
                 name_input = tab.ele('@class:name-input')
                 name_input.input(TEL_NAME)
+            if TEL_TEXT:
+                text_input = tab.ele('@class:leaveword-textarea')
+                text_input.input(TEL_TEXT)
             callback = tab.ele('@class:leaveword-submit')
             if callback:
                 callback.click(by_js=True)
