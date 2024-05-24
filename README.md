@@ -54,7 +54,7 @@
 
 ## 更新记录
 
-[👉看这里👈](https://github.com/ehnait/contactPutianHospital/releases)
+~~[👉看这里👈](https://github.com/ehnait/contactPutianHospital/releases)~~
 
 ## 运行截图
 
